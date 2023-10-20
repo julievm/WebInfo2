@@ -52,18 +52,21 @@ public class ParseDocs {
         String nextline = br.readLine();
 //        String line = br.readLine();
         int i = 1;
+        int j = 1;
+        int k = 1;
+        int m = 1;
         Document doc = new Document();
+
         while(nextline != null){
             if(nextline.charAt(0) == '.'){
-
-//                doc.add(new TextField("docId", Integer.toString(i), Field.Store.YES));
-//                i++;
                 if(nextline.charAt(1) == 'I'){
                     doc = new Document();
                     int docId = Integer.parseInt(nextline.substring(3).trim());
 
                     doc.add(new TextField("docId", Integer.toString(docId), Field.Store.YES));
                     nextline = br.readLine();
+                    j++;
+//                    System.out.println(docId);
                 }
                 if(nextline.charAt(1) == 'T'){
                     StringBuilder title = new StringBuilder();
@@ -71,6 +74,7 @@ public class ParseDocs {
                         title.append(nextline);
                     }
                     doc.add(new TextField("title", title.toString(), Field.Store.YES));
+                    k++;
                 }
                 if(nextline.charAt(1) == 'A'){
                     StringBuilder author = new StringBuilder();
@@ -78,6 +82,7 @@ public class ParseDocs {
                         author.append(nextline);
                     }
                     doc.add(new TextField("author", author.toString(), Field.Store.YES));
+                    m++;
                 }
                 if(nextline.charAt(1) == 'B'){
                     StringBuilder bib = new StringBuilder();
@@ -88,18 +93,28 @@ public class ParseDocs {
                 }
                 if(nextline.charAt(1) == 'W'){
                     StringBuilder content = new StringBuilder();
-                    while((nextline = br.readLine()) != null && (nextline.charAt(0) != '.') && nextline.charAt(1) != 'I'){
+                    while((nextline = br.readLine()) != null && !nextline.startsWith(".I ")){
                         content.append(nextline);
                     }
                     doc.add(new TextField("content", content.toString(), Field.Store.YES));
-                    documents.add(doc);
+//                    documents.add(doc);
+                    iwriter.addDocument(doc);
+                    i++;
                 }
-                System.out.println(doc);
+
 
             }
+
         }
+        System.out.println("content: " + i);
+        System.out.println("id: " + j);
+        System.out.println("title " + k);
+        System.out.println("author " + m);
+
         // Write all the documents in the linked list to the search index
-        iwriter.addDocuments(documents);
+//        iwriter.addDocuments(documents);
+//        System.out.println(documents.size());
+//        System.out.println(documents.get(1));
 
         // Commit everything and close
         iwriter.close();
