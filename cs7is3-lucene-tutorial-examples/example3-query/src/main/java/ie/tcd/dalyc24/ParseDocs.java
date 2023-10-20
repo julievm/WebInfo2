@@ -52,14 +52,17 @@ public class ParseDocs {
         String nextline = br.readLine();
 //        String line = br.readLine();
         int i = 1;
+        Document doc = new Document();
         while(nextline != null){
             if(nextline.charAt(0) == '.'){
-                Document doc = new Document();
-                doc.add(new TextField("docId", Integer.toString(i), Field.Store.YES));
-                i++;
+
+//                doc.add(new TextField("docId", Integer.toString(i), Field.Store.YES));
+//                i++;
                 if(nextline.charAt(1) == 'I'){
+                    doc = new Document();
                     int docId = Integer.parseInt(nextline.substring(3).trim());
-                    //doc.add(new TextField("docId", Integer.toString(docId), Field.Store.YES));
+
+                    doc.add(new TextField("docId", Integer.toString(docId), Field.Store.YES));
                     nextline = br.readLine();
                 }
                 if(nextline.charAt(1) == 'T'){
@@ -85,13 +88,14 @@ public class ParseDocs {
                 }
                 if(nextline.charAt(1) == 'W'){
                     StringBuilder content = new StringBuilder();
-                    while((nextline = br.readLine()) != null && nextline.charAt(0) != '.'){
+                    while((nextline = br.readLine()) != null && (nextline.charAt(0) != '.') && nextline.charAt(1) != 'I'){
                         content.append(nextline);
                     }
                     doc.add(new TextField("content", content.toString(), Field.Store.YES));
+                    documents.add(doc);
                 }
                 System.out.println(doc);
-                documents.add(doc);
+
             }
         }
         // Write all the documents in the linked list to the search index
@@ -148,12 +152,15 @@ public class ParseDocs {
                     String queryString = content.toString().trim().replace("*", "").replace("?", "");
                     Query query = parser.parse(queryString);
 
-                    ScoreDoc[] hits = isearcher.search(query, 10000).scoreDocs;
+                    ScoreDoc[] hits = isearcher.search(query, 50).scoreDocs;
                     // Print the results
-                    System.out.println("Documents: " + hits.length);
+//                    System.out.println("Documents: " + hits.length);
                     for (int i = 0; i < hits.length; i++)
                     {
                         Document hitDoc = isearcher.doc(hits[i].doc);
+                        if(hitDoc.get("docId") == null){
+                            System.out.println(hitDoc.get("title"));
+                        }
                         writer.append(queryID + " Q0 " + hitDoc.get("docId") + " " + i + " " + hits[i].score + " STANDARD\n");
                     }
                     queryID++;
