@@ -51,14 +51,15 @@ public class ParseDocs {
         //query from slides (how to read in whole query sentence)
         String nextline = br.readLine();
 //        String line = br.readLine();
-
+        int i = 1;
         while(nextline != null){
             if(nextline.charAt(0) == '.'){
                 Document doc = new Document();
-
+                doc.add(new TextField("docId", Integer.toString(i), Field.Store.YES));
+                i++;
                 if(nextline.charAt(1) == 'I'){
                     int docId = Integer.parseInt(nextline.substring(3).trim());
-                    doc.add(new TextField("docId", Integer.toString(docId), Field.Store.YES));
+                    //doc.add(new TextField("docId", Integer.toString(docId), Field.Store.YES));
                     nextline = br.readLine();
                 }
                 if(nextline.charAt(1) == 'T'){
@@ -89,7 +90,7 @@ public class ParseDocs {
                     }
                     doc.add(new TextField("content", content.toString(), Field.Store.YES));
                 }
-//                System.out.println(doc);
+                System.out.println(doc);
                 documents.add(doc);
             }
         }
