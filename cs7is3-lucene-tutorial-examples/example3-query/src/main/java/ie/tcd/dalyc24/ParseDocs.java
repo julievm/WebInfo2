@@ -26,6 +26,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
+import org.apache.lucene.search.similarities.BooleanSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -165,7 +166,8 @@ public class ParseDocs {
         DirectoryReader ireader = DirectoryReader.open(directory2);
         IndexSearcher isearcher = new IndexSearcher(ireader);
 //        isearcher.setSimilarity(new BM25Similarity());
-        isearcher.setSimilarity(new ClassicSimilarity());
+//        isearcher.setSimilarity(new ClassicSimilarity());
+        isearcher.setSimilarity(new BooleanSimilarity());
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(results, true));
 
