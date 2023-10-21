@@ -39,10 +39,11 @@ public class ParseDocs {
 //        Analyzer analyzer = new StandardAnalyzer();
         Analyzer analyzer = CustomAnalyzer.builder()
                 .withTokenizer("standard")
+                .addTokenFilter("standard")
                 .addTokenFilter("lowercase")
                 .addTokenFilter("stop")
                 .addTokenFilter("porterstem")
-                .addTokenFilter(FixedShingleFilterFactory.class)
+                .addTokenFilter(ShingleFilterFactory.class)
                 .build();
 
 
@@ -151,10 +152,11 @@ public class ParseDocs {
 //        Analyzer analyzer = new EnglishAnalyzer();
         Analyzer analyzer = CustomAnalyzer.builder()
                 .withTokenizer("standard")
+                .addTokenFilter("standard")
                 .addTokenFilter("lowercase")
                 .addTokenFilter("stop")
                 .addTokenFilter("porterstem")
-                .addTokenFilter(FixedShingleFilterFactory.class)
+                .addTokenFilter(ShingleFilterFactory.class)
                 .build();
 
         ArrayList<String> strings = new ArrayList<>();
