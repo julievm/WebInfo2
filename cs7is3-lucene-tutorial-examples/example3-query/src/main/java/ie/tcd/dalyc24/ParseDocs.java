@@ -35,8 +35,8 @@ public class ParseDocs {
         Analyzer analyzer = new EnglishAnalyzer();
 //        Analyzer analyzer = new StandardAnalyzer();
 
-        ArrayList<Document> documents = new ArrayList<Document>();
-
+//        ArrayList<Document> documents = new ArrayList<Document>();
+//
         BufferedReader br = new BufferedReader(new FileReader(file));
 
         // Open the directory that contains the search index
@@ -74,7 +74,7 @@ public class ParseDocs {
                     while((nextline = br.readLine()).charAt(0) != '.'){
                         title.append(nextline);
                     }
-                    doc.add(new TextField("title", title.toString(), Field.Store.YES));
+//                    doc.add(new TextField("title", title.toString(), Field.Store.YES));
                     k++;
                 }
                 if(nextline.charAt(1) == 'A'){
@@ -82,7 +82,7 @@ public class ParseDocs {
                     while((nextline = br.readLine()).charAt(0) != '.'){
                         author.append(nextline);
                     }
-                    doc.add(new TextField("author", author.toString(), Field.Store.YES));
+//                    doc.add(new TextField("author", author.toString(), Field.Store.YES));
                     m++;
                 }
                 if(nextline.charAt(1) == 'B'){
@@ -90,7 +90,7 @@ public class ParseDocs {
                     while((nextline = br.readLine()).charAt(0) != '.'){
                         bib.append(nextline);
                     }
-                    doc.add(new TextField("bib", bib.toString(), Field.Store.YES));
+//                    doc.add(new TextField("bib", bib.toString(), Field.Store.YES));
                 }
                 if(nextline.charAt(1) == 'W'){
                     StringBuilder content = new StringBuilder();
@@ -107,10 +107,10 @@ public class ParseDocs {
             }
 
         }
-        System.out.println("content: " + i);
-        System.out.println("id: " + j);
-        System.out.println("title " + k);
-        System.out.println("author " + m);
+//        System.out.println("content: " + i);
+//        System.out.println("id: " + j);
+//        System.out.println("title " + k);
+//        System.out.println("author " + m);
 
         // Write all the documents in the linked list to the search index
 //        iwriter.addDocuments(documents);
@@ -175,9 +175,9 @@ public class ParseDocs {
                     for (int i = 0; i < hits.length; i++)
                     {
                         Document hitDoc = isearcher.doc(hits[i].doc);
-                        if(hitDoc.get("docId") == null){
-                            System.out.println(hitDoc.get("title"));
-                        }
+//                        if(hitDoc.get("docId") == null){
+//                            System.out.println(hitDoc.get("title"));
+//                        }
                         writer.append(queryID + " Q0 " + hitDoc.get("docId") + " " + i + " " + hits[i].score + " STANDARD\n");
                     }
                     queryID++;
