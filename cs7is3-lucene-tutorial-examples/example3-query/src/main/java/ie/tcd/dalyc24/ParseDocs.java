@@ -7,7 +7,10 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.shingle.FixedShingleFilterFactory;
+import org.apache.lucene.analysis.shingle.ShingleFilterFactory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -32,8 +35,16 @@ public class ParseDocs {
     public static void main(String[] args) throws IOException, ParseException {
         File file = new File("cs7is3-lucene-tutorial-examples/corpus2/cran.all.1400");
 
-        Analyzer analyzer = new EnglishAnalyzer();
+//        Analyzer analyzer = new EnglishAnalyzer();
 //        Analyzer analyzer = new StandardAnalyzer();
+        Analyzer analyzer = CustomAnalyzer.builder()
+                .addTokenFilter(FixedShingleFilterFactory.class)
+                .withTokenizer("standard")
+                .addTokenFilter("lowercase")
+                .addTokenFilter("stop")
+                .addTokenFilter("porterstem")
+                .build();
+
 
 //        ArrayList<Document> documents = new ArrayList<Document>();
 //
@@ -137,7 +148,14 @@ public class ParseDocs {
         File results = new File("results.txt");
 
 //        Analyzer analyzer = new StandardAnalyzer();
-        Analyzer analyzer = new EnglishAnalyzer();
+//        Analyzer analyzer = new EnglishAnalyzer();
+        Analyzer analyzer = CustomAnalyzer.builder()
+                .addTokenFilter(FixedShingleFilterFactory.class)
+                .withTokenizer("standard")
+                .addTokenFilter("lowercase")
+                .addTokenFilter("stop")
+                .addTokenFilter("porterstem")
+                .build();
 
         ArrayList<String> strings = new ArrayList<>();
 
