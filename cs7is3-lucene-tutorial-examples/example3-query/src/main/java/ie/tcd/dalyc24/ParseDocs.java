@@ -39,7 +39,6 @@ public class ParseDocs {
 //        Analyzer analyzer = new StandardAnalyzer();
         Analyzer analyzer = CustomAnalyzer.builder()
                 .withTokenizer("standard")
-                .addTokenFilter("standard")
                 .addTokenFilter("lowercase")
                 .addTokenFilter("stop")
                 .addTokenFilter("porterstem")
@@ -152,7 +151,6 @@ public class ParseDocs {
 //        Analyzer analyzer = new EnglishAnalyzer();
         Analyzer analyzer = CustomAnalyzer.builder()
                 .withTokenizer("standard")
-                .addTokenFilter("standard")
                 .addTokenFilter("lowercase")
                 .addTokenFilter("stop")
                 .addTokenFilter("porterstem")
