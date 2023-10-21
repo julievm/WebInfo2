@@ -35,15 +35,15 @@ public class ParseDocs {
     public static void main(String[] args) throws IOException, ParseException {
         File file = new File("cs7is3-lucene-tutorial-examples/corpus2/cran.all.1400");
 
-//        Analyzer analyzer = new EnglishAnalyzer();
+        Analyzer analyzer = new EnglishAnalyzer();
 //        Analyzer analyzer = new StandardAnalyzer();
-        Analyzer analyzer = CustomAnalyzer.builder()
-                .withTokenizer("standard")
-                .addTokenFilter("lowercase")
-                .addTokenFilter("stop")
-                .addTokenFilter("porterstem")
-                .addTokenFilter(ShingleFilterFactory.class)
-                .build();
+//        Analyzer analyzer = CustomAnalyzer.builder()
+//                .withTokenizer("standard")
+//                .addTokenFilter("lowercase")
+//                .addTokenFilter("stop")
+//                .addTokenFilter("porterstem")
+//                .addTokenFilter(FixedShingleFilterFactory.class)
+//                .build();
 
 
 //        ArrayList<Document> documents = new ArrayList<Document>();
@@ -148,14 +148,14 @@ public class ParseDocs {
         File results = new File("results.txt");
 
 //        Analyzer analyzer = new StandardAnalyzer();
-//        Analyzer analyzer = new EnglishAnalyzer();
-        Analyzer analyzer = CustomAnalyzer.builder()
-                .withTokenizer("standard")
-                .addTokenFilter("lowercase")
-                .addTokenFilter("stop")
-                .addTokenFilter("porterstem")
-                .addTokenFilter(ShingleFilterFactory.class)
-                .build();
+        Analyzer analyzer = new EnglishAnalyzer();
+//        Analyzer analyzer = CustomAnalyzer.builder()
+//                .withTokenizer("standard")
+//                .addTokenFilter("lowercase")
+//                .addTokenFilter("stop")
+//                .addTokenFilter("porterstem")
+//                .addTokenFilter(FixedShingleFilterFactory.class)
+//                .build();
 
         ArrayList<String> strings = new ArrayList<>();
 
