@@ -18,6 +18,7 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -166,7 +167,10 @@ public class ParseDocs {
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(results, true));
 
-        QueryParser parser = new QueryParser("content", analyzer);
+//        QueryParser parser = new QueryParser("content", analyzer);
+        MultiFieldQueryParser parser = new MultiFieldQueryParser(
+                new String[] {"content", "title"},
+                analyzer);
 
         BufferedReader br = new BufferedReader(new FileReader(file));
 
