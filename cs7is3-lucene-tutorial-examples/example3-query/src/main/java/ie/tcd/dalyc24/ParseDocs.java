@@ -39,19 +39,8 @@ public class ParseDocs {
     public static void main(String[] args) throws IOException, ParseException {
         File file = new File("cs7is3-lucene-tutorial-examples/corpus2/cran.all.1400");
 
+        // create analyzer
         Analyzer analyzer = new EnglishAnalyzer();
-//        Analyzer analyzer = new StandardAnalyzer();
-//        Analyzer analyzer = CustomAnalyzer.builder()
-//                .withTokenizer("standard")
-//                .addTokenFilter("lowercase")
-//                .addTokenFilter("stop")
-//                .addTokenFilter("porterstem")
-//                .addTokenFilter(FixedShingleFilterFactory.class)
-//                .build();
-
-
-//        ArrayList<Document> documents = new ArrayList<Document>();
-//
         BufferedReader br = new BufferedReader(new FileReader(file));
 
         // Open the directory that contains the search index
@@ -62,19 +51,22 @@ public class ParseDocs {
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
         IndexWriter iwriter = new IndexWriter(directory, config);
 
-        //read in the file, look fro .something and then add to appropriate thing in doc.
-
-        //query from slides (how to read in whole query sentence)
+        // Keep track of line we are reading in
         String nextline = br.readLine();
-//        String line = br.readLine();
+
+        // Counters to check how often each field gets passed
         int i = 1;
         int j = 1;
         int k = 1;
         int m = 1;
+
+        // Initialize a new document
         Document doc = new Document();
 
+        // Keep reading in until we reach the last line
         while(nextline != null){
             if(nextline.charAt(0) == '.'){
+                // If we encounter '.I' -> id
                 if(nextline.charAt(1) == 'I'){
                     doc = new Document();
                     int docId = Integer.parseInt(nextline.substring(3).trim());
@@ -82,10 +74,11 @@ public class ParseDocs {
                     doc.add(new TextField("docId", Integer.toString(docId), Field.Store.YES));
                     nextline = br.readLine();
                     j++;
-//                    System.out.println(docId);
                 }
+                // If we encounter '.T' -> title
                 if(nextline.charAt(1) == 'T'){
                     StringBuilder title = new StringBuilder();
+                    // Keep reading until we encounter '.' again at the start of line
                     while((nextline = br.readLine()).charAt(0) != '.'){
                         title.append(nextline);
                     }
@@ -93,6 +86,7 @@ public class ParseDocs {
                     doc.add(fieldTitle);
                     k++;
                 }
+                // If we encounter '.A' -> author
                 if(nextline.charAt(1) == 'A'){
                     StringBuilder author = new StringBuilder();
                     while((nextline = br.readLine()).charAt(0) != '.'){
@@ -101,6 +95,7 @@ public class ParseDocs {
                     doc.add(new TextField("author", author.toString(), Field.Store.YES));
                     m++;
                 }
+                // If we encounter '.B' -> bib
                 if(nextline.charAt(1) == 'B'){
                     StringBuilder bib = new StringBuilder();
                     while((nextline = br.readLine()).charAt(0) != '.'){
@@ -108,13 +103,13 @@ public class ParseDocs {
                     }
                     doc.add(new TextField("bib", bib.toString(), Field.Store.YES));
                 }
+                // If we encounter '.W' -> content
                 if(nextline.charAt(1) == 'W'){
                     StringBuilder content = new StringBuilder();
                     while((nextline = br.readLine()) != null && !nextline.startsWith(".I ")){
                         content.append(nextline);
                     }
                     doc.add(new TextField("content", content.toString(), Field.Store.YES));
-//                    documents.add(doc);
                     iwriter.addDocument(doc);
                     i++;
                 }
@@ -123,20 +118,18 @@ public class ParseDocs {
             }
 
         }
+
+        // Print out counters
         System.out.println("content: " + i);
         System.out.println("id: " + j);
         System.out.println("title " + k);
         System.out.println("author " + m);
 
-        // Write all the documents in the linked list to the search index
-//        iwriter.addDocuments(documents);
-//        System.out.println(documents.size());
-//        System.out.println(documents.get(1));
-
         // Commit everything and close
         iwriter.close();
         directory.close();
 
+        // Call queryIndexing
         queryIndexing();
     }
 
@@ -150,30 +143,20 @@ public class ParseDocs {
         Directory directory2 = FSDirectory.open(Paths.get(INDEX_DIRECTORY));
         File file = new File("cs7is3-lucene-tutorial-examples/corpus2/cran.qry");
 
+        // Create result file
         File results = new File("results.txt");
 
-//        Analyzer analyzer = new StandardAnalyzer();
+        // Analyzer
         Analyzer analyzer = new EnglishAnalyzer();
-//        Analyzer analyzer = CustomAnalyzer.builder()
-//                .withTokenizer("standard")
-//                .addTokenFilter("lowercase")
-//                .addTokenFilter("stop")
-//                .addTokenFilter("porterstem")
-//                .addTokenFilter(FixedShingleFilterFactory.class)
-//                .build();
-
-        ArrayList<String> strings = new ArrayList<>();
 
         // create objects to read and search across the index
         DirectoryReader ireader = DirectoryReader.open(directory2);
         IndexSearcher isearcher = new IndexSearcher(ireader);
         isearcher.setSimilarity(new BM25Similarity());
-//        isearcher.setSimilarity(new ClassicSimilarity());
-
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(results, true));
 
-//        QueryParser parser = new QueryParser("content", analyzer);
+        // Query parser
         MultiFieldQueryParser parser = new MultiFieldQueryParser(
                 new String[] {"content", "title"},
                 analyzer);
@@ -193,13 +176,13 @@ public class ParseDocs {
                     while((nextLine = br.readLine()) != null && nextLine.charAt(0) != '.'){
                         content.append(nextLine);
                     }
-//                    System.out.println(content.toString());
+                    // Replace chars that are not allowed
                     String queryString = content.toString().trim().replace("*", "").replace("?", "");
                     Query query = parser.parse(queryString);
 
                     ScoreDoc[] hits = isearcher.search(query, 50).scoreDocs;
-                    // Print the results
-//                    System.out.println("Documents: " + hits.length);
+
+                    // Get right form for trec_eval
                     for (int i = 0; i < hits.length; i++)
                     {
                         Document hitDoc = isearcher.doc(hits[i].doc);
@@ -208,6 +191,7 @@ public class ParseDocs {
                         }
                         writer.append(queryID + " Q0 " + hitDoc.get("docId") + " " + i + " " + hits[i].score + " STANDARD\n");
                     }
+                    //increase queryId
                     queryID++;
                 }
             }
