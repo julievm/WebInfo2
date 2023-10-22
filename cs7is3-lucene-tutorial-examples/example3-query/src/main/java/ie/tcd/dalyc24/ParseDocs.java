@@ -27,6 +27,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
 import org.apache.lucene.search.similarities.BooleanSimilarity;
+import org.apache.lucene.search.similarities.MultiSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -88,7 +89,8 @@ public class ParseDocs {
                     while((nextline = br.readLine()).charAt(0) != '.'){
                         title.append(nextline);
                     }
-                    doc.add(new TextField("title", title.toString(), Field.Store.YES));
+                    TextField fieldTitle = new TextField("title", title.toString(), Field.Store.YES);
+                    doc.add(fieldTitle);
                     k++;
                 }
                 if(nextline.charAt(1) == 'A'){
@@ -165,9 +167,9 @@ public class ParseDocs {
         // create objects to read and search across the index
         DirectoryReader ireader = DirectoryReader.open(directory2);
         IndexSearcher isearcher = new IndexSearcher(ireader);
-//        isearcher.setSimilarity(new BM25Similarity());
+        isearcher.setSimilarity(new BM25Similarity());
 //        isearcher.setSimilarity(new ClassicSimilarity());
-        isearcher.setSimilarity(new BooleanSimilarity());
+
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(results, true));
 
